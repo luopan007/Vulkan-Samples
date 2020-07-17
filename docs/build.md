@@ -232,63 +232,68 @@ cmake --build build/mac --config Release --target vulkan_samples -- -j4
 ```
 
 
-# Android
 
-## Dependencies
+# 编译Android平台
 
-For all dependencies set the following environment variables.
+## 依赖包如下：
 
-- CMake v3.10+
-- JDK 8+ `JAVA_HOME=<SYSTEM_DIR>/java`
+- CMake v3.10+ `CMAKE_ROOT=<WORK_DIR>/cmake`
+- JDK 8+ `JAVA_HOME=<WORK_DIR>/java`
 - Android NDK r18+ `ANDROID_NDK_ROOT=<WORK_DIR>/android-ndk`
 - Android SDK `ANDROID_HOME=<WORK_DIR>/android-sdk`
 - Gradle 5+ `GRADLE_HOME=<WORK_DIR>/gradle`
-- [CMake Options](#cmake-options)
-- [3D models](#3d-models)
-- [Performance data](#performance-data)
 
-## Build with Gradle
+## 环境配置如下：
 
-`Step 1.` Generate the gradle project using the internal script by running the following command
+### 安装DevEco Studio
 
-##### Windows <!-- omit in toc -->
+  - 请在软件中安装
+
+### 下载Gradle5.6（版本不限制）
+  - 地址：https://gradle.org/next-steps/?version=5.6&format=bin
+
+### 配置环境变量---单个变量
+  - ADB_EXECUTABLE ：ADB环境变量
+  - ANDROID_NDK_HOME ：NDK环境变量
+  - ANDROID_SDK_ROOT ：SDK环境变量
+  - CMAKE_ROOT ：CMake环境变量
+  - JAVA_HOME ：Java环境变量
+  - GRADLE_HOME : Gradle环境变量
+
+### 将以上变量全部添加到Path中,如下图：
+
+%ANDROID_NDK_HOME%\toolchains\llvm\prebuilt\windows-x86_64\bin;%CMAKE_ROOT%;%ADB_EXECUTABLE%;%ANDROID_NDK_HOME%;%ANDROID_SDK_ROOT%;%GRADLE_HOME%;
+
+
+## 使用Gradle编译
+
+`第一步：` 生成Gradle编译必要的build.gradle和settings.gradle文件，命令如下：
 
 ```
 bldsys\scripts\generate_android_gradle.bat
 ```
 
-##### Linux <!-- omit in toc -->
+结果就是在根目录新增目录： `build\android_gradle`
 
-```
-./bldsys/scripts/generate_android_gradle.sh
-```
-
-A new folder will be created in the root directory at `build\android_gradle`
-
-`Step 2.` Build the project
+`第二步：` 编译项目
 
 ```
 cd build/android_gradle
-gradle assembleDebug
+gradle.bat assembleDebug
 ```
+编译结果，如下图：
 
-`Step 3.` You can now run the apk on a connected device
+![](compile_result.jpg)
+
+`第三步：` 连接设备调试程序，命令如下
 
 ```
 adb install build/outputs/apk/debug/vulkan_samples-debug.apk
 ```
 
-> Alternatively, you may import the `build/android_gradle` folder in Android Studio and run the project from here
+> 另外, 你也可以使用DevEco Studio导入 `build/android_gradle` ，然后按照通用Android项目进行调试即可。
 
-If you are using a newer version of cmake then 3.13, you might get this error:
 
-> Execution failed for task ':externalNativeBuildDebug'.
-Expected output file at \<PATH> for target \<sample> but there was none
-
-In this case, update the version of the gradle plugin in "bldsys/cmake/template/gradle/build.gradle.in" to 3.5.0, remove the content of build folder and repeat the build process from Step 1. This is known to work with Gradle 6.3 and NDK 20.0.55
-
-If you are using Android Studio, you can simply do these changes after importing the `build/android_gradle` folder, opening File->Project Structure, and doing the following changes:
-On the Project tab, change the Android Gradle Plugin version to 3.5.0 and the Gradle version to 6.3.(this also requires NDK 20.0.55)
 
 # Building Individual Samples
 
