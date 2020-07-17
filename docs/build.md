@@ -245,7 +245,7 @@ cmake --build build/mac --config Release --target vulkan_samples -- -j4
 
 ## 环境配置如下：
 
-### 安装DevEco Studio
+### 安装Android Studio
 
   - 请在软件中安装
 
